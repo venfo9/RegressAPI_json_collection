@@ -1,0 +1,335 @@
+{
+	"info": {
+		"_postman_id": "da617e65-7c45-466e-8cfc-190bbc3fbc91",
+		"name": "Test regress api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15845205"
+	},
+	"item": [
+		{
+			"name": "Create user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Parsing the JSON response\r",
+							"var responseBody = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Checking the value of the 'name' field\", function() {\r",
+							"    pm.expect(responseBody.name).to.equal(\"morpheus\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Checking the value of the 'job' field\", function() {\r",
+							"    pm.expect(responseBody.job).to.equal(\"leader\");\r",
+							"});\r",
+							" \r",
+							"pm.test(\"Checking that the value of the 'id' field is numeric\", function() {\r",
+							"    pm.environment.set(\"userId\", responseBody.id);\r",
+							"    pm.expect(responseBody.id).to.be.a('number');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Checking the format of the date and time in the 'createdAt' field\", function() {\r",
+							"    var createdAtPattern = /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{3}Z$/;\r",
+							"    pm.expect(responseBody.createdAt).to.match(createdAtPattern);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"{{nameKey}}\": \"{{nameValue}}\",\r\n    \"{{jobKey}}\": \"{{jobValue}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base-url}}/{{api-ver}}/users",
+					"host": [
+						"{{base-url}}"
+					],
+					"path": [
+						"{{api-ver}}",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Parsing the JSON response\r",
+							"var responseBody = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Checking the value of the 'name' field\", function() {\r",
+							"    pm.expect(responseBody.name).to.equal(\"morpheus_edited\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Checking the value of the 'job' field\", function() {\r",
+							"    pm.expect(responseBody.job).to.equal(\"leader_edited\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Checking the format of the date and time in the 'createdAt' field\", function() {\r",
+							"    var updatedAtPattern = /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{3}Z$/;\r",
+							"    pm.expect(responseBody.updatedAt).to.match(updatedAtPattern);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"{{nameKey}}\": \"{{nameValue}}_edited\",\r\n    \"{{jobKey}}\": \"{{jobValue}}_edited\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base-url}}/{{api-ver}}/users/{{userId}}",
+					"host": [
+						"{{base-url}}"
+					],
+					"path": [
+						"{{api-ver}}",
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get userId after modification",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Parsing the JSON response\r",
+							"var responseBody = pm.response.json();\r",
+							"\r",
+							"// Checking the value of the \"id\" field\r",
+							"pm.test(\"The 'id' field should be a number\", function() {\r",
+							"    pm.expect(responseBody.data.id).to.be.a('number');\r",
+							"});\r",
+							"\r",
+							"// Checking the value of the \"email\" field\r",
+							"pm.test(\"The 'email' field should be a valid email address\", function() {\r",
+							"    var emailPattern = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;\r",
+							"    pm.expect(responseBody.data.email).to.match(emailPattern);\r",
+							"});\r",
+							"\r",
+							"// Checking the value of the \"first_name\" field\r",
+							"pm.test(\"The 'first_name' field should be a non-empty string\", function() {\r",
+							"    pm.expect(responseBody.data.first_name).to.be.a('string').and.not.empty;\r",
+							"});\r",
+							"\r",
+							"// Checking the value of the \"last_name\" field\r",
+							"pm.test(\"The 'last_name' field should be a non-empty string\", function() {\r",
+							"    pm.expect(responseBody.data.last_name).to.be.a('string').and.not.empty;\r",
+							"});\r",
+							"\r",
+							"// Checking the format of the URL in the \"avatar\" field\r",
+							"pm.test(\"The format of the URL in the 'avatar' field should be valid\", function() {\r",
+							"    var urlPattern = /^https?:\\/\\/\\S+$/;\r",
+							"    pm.expect(responseBody.data.avatar).to.match(urlPattern);\r",
+							"});\r",
+							"\r",
+							"// Checking the format of the URL in the \"support.url\" field\r",
+							"pm.test(\"The format of the URL in the 'support.url' field should be valid\", function() {\r",
+							"    var urlPattern = /^https?:\\/\\/\\S+$/;\r",
+							"    pm.expect(responseBody.support.url).to.match(urlPattern);\r",
+							"});\r",
+							"\r",
+							"// Checking the text in the \"support.text\" field\r",
+							"pm.test(\"The 'support.text' field should be a non-empty string\", function() {\r",
+							"    pm.expect(responseBody.support.text).to.be.a('string').and.not.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base-url}}/{{api-ver}}/users/{{userId}}",
+					"host": [
+						"{{base-url}}"
+					],
+					"path": [
+						"{{api-ver}}",
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base-url}}/{{api-ver}}/users/{{userId}}",
+					"host": [
+						"{{base-url}}"
+					],
+					"path": [
+						"{{api-ver}}",
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get userId after deletion",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base-url}}/{{api-ver}}/users/{{userId}}",
+					"host": [
+						"{{base-url}}"
+					],
+					"path": [
+						"{{api-ver}}",
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base-url",
+			"value": "https://reqres.in",
+			"type": "string"
+		},
+		{
+			"key": "api-ver",
+			"value": "api",
+			"type": "string"
+		}
+	]
+}
