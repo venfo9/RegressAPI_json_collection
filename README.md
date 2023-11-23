@@ -3,6 +3,8 @@ regress_api.postman_collection.json holds JS tests for Regress API (https://reqr
 regress_api.postman_environment.json includes environment variables for regress_api.postman_collection.json  
 Use these files for automated testing with Newman or import them into Postman for semi-manual testing.
 
+Newman command: newman run ...regress_api.postman_collection.json -e ...regress_api.postman_environment.json
+
 The collection includes five requests:
 1. Create User
    Tests: "Checking the value of the 'name' field."
@@ -28,3 +30,5 @@ The collection includes five requests:
    Tests: "Checking the status code"
 5. Get userId after deletion
    Tests: "Checking the status code"
+   
+
