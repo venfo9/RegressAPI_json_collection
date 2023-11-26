@@ -15,7 +15,7 @@ The collection includes five requests:
 2. Update User
    Tests: "Checking the value of the 'name' field."
           "Checking the value of the 'job' field"
-          "Check the date and time format in the 'createdAt' field."
+          "Check the date and time format in the 'updatedAT' field."
           "Checking the status code"
 3. Get userId after modification
    Tests: "The 'id' field should be a number."
